@@ -111,7 +111,7 @@ const App = () => {
   // Helper function to combine two words using OpenAI API
   const combineWords = async (word1, word2) => {
     const prompt = `You are a 20-something American. I'll give you two words, "${word1}" and "${word2}", and you have to come up with one word that connects them. It should be humorous and Gen-Z style, and it must be a real, commonly used word. Respond with only the word, no extra symbols or explanations.`;
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
