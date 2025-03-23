@@ -38,7 +38,7 @@ const TextParticles = forwardRef(({ texts, positions, width, onChaosComplete }, 
       // Create a canvas to render the text as an image
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-      const fontSize = 60; 
+      const fontSize = 60;
       const maxWidth = width * 0.3; // Maximum width for text wrapping
       canvas.width = 1024;
       canvas.height = 512;
@@ -155,54 +155,53 @@ const TextParticles = forwardRef(({ texts, positions, width, onChaosComplete }, 
   };
 
   // Function to apply chaos animations to particles
-  // Function to apply chaos animations to particles (now returns a Promise)
-const chaosParticles = () => {
-  return new Promise((resolve) => {
-    const chaoticParticles = particles.map((particle) => ({
-      ...particle,
-      isChaos: true,
-      chaosTargetPosition: [
-        (Math.random() - 0.5) * 200,
-        (Math.random() - 0.5) * 200,
-        (Math.random() - 0.5) * 200,
-      ],
-      progress: 0,
-    }));
+  const chaosParticles = () => {
+    return new Promise((resolve) => {
+      const chaoticParticles = particles.map((particle) => ({
+        ...particle,
+        isChaos: true,
+        chaosTargetPosition: [
+          (Math.random() - 0.5) * 200,
+          (Math.random() - 0.5) * 200,
+          (Math.random() - 0.5) * 200,
+        ],
+        progress: 0,
+      }));
 
-    setParticles(chaoticParticles);
+      setParticles(chaoticParticles);
 
-    // Wait for the chaos animation to finish
-    setTimeout(() => {
-      const resetParticles = previousParticlesRef.current
-        .filter((particle) => particle.textIndex === texts.length - 1)
-        .map((particle) => {
-          const positionDiff = [
-            positions[0][0] - positions[1][0],
-            positions[0][1] - positions[1][1],
-            positions[0][2] - positions[1][2],
-          ];
-          const newTargetPosition = [
-            particle.targetPosition[0] + positionDiff[0],
-            particle.targetPosition[1] + positionDiff[1],
-            particle.targetPosition[2] + positionDiff[2],
-          ];
-          return {
-            ...particle,
-            isChaos: false,
-            targetPosition: newTargetPosition,
-            progress: 0,
-          };
-        });
+      // Wait for the chaos animation to finish
+      setTimeout(() => {
+        const resetParticles = previousParticlesRef.current
+          .filter((particle) => particle.textIndex === texts.length - 1)
+          .map((particle) => {
+            const positionDiff = [
+              positions[0][0] - positions[1][0],
+              positions[0][1] - positions[1][1],
+              positions[0][2] - positions[1][2],
+            ];
+            const newTargetPosition = [
+              particle.targetPosition[0] + positionDiff[0],
+              particle.targetPosition[1] + positionDiff[1],
+              particle.targetPosition[2] + positionDiff[2],
+            ];
+            return {
+              ...particle,
+              isChaos: false,
+              targetPosition: newTargetPosition,
+              progress: 0,
+            };
+          });
 
-      setParticles(resetParticles);
+        setParticles(resetParticles);
 
-      // Notify parent if provided
-      if (onChaosComplete) onChaosComplete();
+        // Notify parent if provided
+        if (onChaosComplete) onChaosComplete();
 
-      resolve(); // Resolve the promise so App.jsx can await it
-    }, 3000);
-  });
-};
+        resolve(); // Resolve the promise so App.jsx can await it
+      }, 3000);
+    });
+  };
 
 
   // Regenerate particles when texts or width change

@@ -66,35 +66,44 @@ const App = () => {
   const handleKeyDown = async (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      setIsInputVisible(false); // Hide input, show loading
+
+      // Hide input box, show loading message
+      setIsInputVisible(false);
+
       const userInput = draftText;
       setDraftText('');
 
-      // Split words by space or comma
+      // Parse input words (separated by space or comma)
       const wordList = userInput
         .split(/[\s,]+/)
         .map((w) => w.trim())
         .filter(Boolean);
 
-      const startY = 15; 
-      const gapY = 8;   
+      if (wordList.length === 0) {
+        // No valid input, do nothing
+        setIsInputVisible(true);
+        return;
+      }
+
+      // Prepare initial positions for text particle animation
+      const startY = 15;
+      const gapY = 8;
       setTexts(wordList);
       setPositions(wordList.map((_, i) => [0, startY - i * gapY, 0]));
 
-      // Chaos animation
-      setTimeout(() => {
-        textParticlesRef.current.chaosParticles();
-      }, 5000);
+      // Fire both: chaos animation and OpenAI word suggestion
+      const aiPromise = combineWords(wordList);
+      const chaosPromise =
+        textParticlesRef.current?.chaosParticles?.() ?? Promise.resolve();
 
-      const combinedWord = await combineWords(wordList);
+      const combinedWord = await aiPromise;
+      await chaosPromise;
 
-      // Final display
-      setTimeout(() => {
-        setTexts([combinedWord]);
-        setPositions([[0, 0, 0]]);
-        setBackgroundColor(getRandomBackgroundColor());
-        setIsInputVisible(true);
-      }, 6000);
+      // Final display after both are done
+      setTexts([combinedWord]);
+      setPositions([[0, 0, 0]]);
+      setBackgroundColor(getRandomBackgroundColor());
+      setIsInputVisible(true);
     }
   };
 
