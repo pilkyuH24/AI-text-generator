@@ -11,7 +11,7 @@ Users input a few words, and the app transforms them into animated particle-base
   Renders input text as 3D particle clusters using canvas image processing.
 
 - **AI-Generated Suggestions**  
-  Takes user-input words and asks OpenAI to generate a funny, Gen-Z-style activity or word suggestion.
+  Takes user-input words and asks OpenAI to generate a funny, activity or word suggestion.
 
 - **Chaos Animation**  
   Particles disperse in a chaotic animation before reassembling into the AI-generated result.
@@ -63,5 +63,3 @@ Users input a few words, and the app transforms them into animated particle-base
 ---
 
 ## Demo
-
-Click [here](https://genz-ai-generator.vercel.app/)
