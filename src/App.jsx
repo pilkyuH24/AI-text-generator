@@ -76,11 +76,6 @@ const App = () => {
         .map((w) => w.trim())
         .filter(Boolean);
 
-      if (wordList.length === 0) {
-        setIsInputVisible(true); // Show input again if empty
-        return;
-      }
-
       const startY = 15; 
       const gapY = 8;   
       setTexts(wordList);
