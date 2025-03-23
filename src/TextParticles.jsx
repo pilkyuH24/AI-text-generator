@@ -155,7 +155,9 @@ const TextParticles = forwardRef(({ texts, positions, width, onChaosComplete }, 
   };
 
   // Function to apply chaos animations to particles
-  const chaosParticles = async () => {
+  // Function to apply chaos animations to particles (now returns a Promise)
+const chaosParticles = () => {
+  return new Promise((resolve) => {
     const chaoticParticles = particles.map((particle) => ({
       ...particle,
       isChaos: true,
@@ -170,37 +172,38 @@ const TextParticles = forwardRef(({ texts, positions, width, onChaosComplete }, 
     setParticles(chaoticParticles);
 
     // Wait for the chaos animation to finish
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setTimeout(() => {
+      const resetParticles = previousParticlesRef.current
+        .filter((particle) => particle.textIndex === texts.length - 1)
+        .map((particle) => {
+          const positionDiff = [
+            positions[0][0] - positions[1][0],
+            positions[0][1] - positions[1][1],
+            positions[0][2] - positions[1][2],
+          ];
+          const newTargetPosition = [
+            particle.targetPosition[0] + positionDiff[0],
+            particle.targetPosition[1] + positionDiff[1],
+            particle.targetPosition[2] + positionDiff[2],
+          ];
+          return {
+            ...particle,
+            isChaos: false,
+            targetPosition: newTargetPosition,
+            progress: 0,
+          };
+        });
 
-    // Reset particles to their target positions
-    const resetParticles = previousParticlesRef.current
-      .filter((particle) => particle.textIndex === texts.length - 1)
-      .map((particle) => {
-        const positionDiff = [
-          positions[0][0] - positions[1][0],
-          positions[0][1] - positions[1][1],
-          positions[0][2] - positions[1][2],
-        ];
-        const newTargetPosition = [
-          particle.targetPosition[0] + positionDiff[0],
-          particle.targetPosition[1] + positionDiff[1],
-          particle.targetPosition[2] + positionDiff[2],
-        ];
-        return {
-          ...particle,
-          isChaos: false,
-          targetPosition: newTargetPosition,
-          progress: 0,
-        };
-      });
+      setParticles(resetParticles);
 
-    setParticles(resetParticles);
+      // Notify parent if provided
+      if (onChaosComplete) onChaosComplete();
 
-    // Notify the parent component that chaos animation is complete
-    if (onChaosComplete) {
-      onChaosComplete();
-    }
-  };
+      resolve(); // Resolve the promise so App.jsx can await it
+    }, 3000);
+  });
+};
+
 
   // Regenerate particles when texts or width change
   useEffect(() => {

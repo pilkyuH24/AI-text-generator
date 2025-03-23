@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import TextParticles from './TextParticles';
 import LandingPage from './landingPage';
 
+// Mouse-based camera pan control
 const MouseOverPanControls = () => {
   const { camera, gl } = useThree();
 
@@ -30,7 +31,9 @@ const MouseOverPanControls = () => {
 };
 
 const App = () => {
-  const [texts, setTexts] = useState(["Not sure what to do? Try giving me a few words!"]);
+  const [texts, setTexts] = useState([
+    "Not sure what to do? Try giving me a few words!",
+  ]);
   const [positions, setPositions] = useState([[0, 0, 0]]);
   const [draftText, setDraftText] = useState('');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -57,47 +60,49 @@ const App = () => {
     return backgroundColors[randomIndex];
   };
 
-  const [backgroundColor, setBackgroundColor] = useState(getRandomBackgroundColor());
+  const [backgroundColor, setBackgroundColor] = useState(
+    getRandomBackgroundColor()
+  );
 
   const handleChange = (event) => {
     setDraftText(event.target.value);
   };
 
+  // Handle "Enter" key press
   const handleKeyDown = async (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      setIsInputVisible(false); // Hide input, show loading
+      setIsInputVisible(false); // Hide input and show loading
       const userInput = draftText;
       setDraftText('');
 
-      // Split words by space or comma
+      // Split input into words (space or comma separated)
       const wordList = userInput
         .split(/[\s,]+/)
         .map((w) => w.trim())
         .filter(Boolean);
 
-      const startY = 15; 
-      const gapY = 8;   
+      const startY = 15;
+      const gapY = 8;
       setTexts(wordList);
       setPositions(wordList.map((_, i) => [0, startY - i * gapY, 0]));
 
-      // Chaos animation
-      setTimeout(() => {
-        textParticlesRef.current.chaosParticles();
-      }, 5000);
+      // Start API call and chaos animation in parallel
+      const aiPromise = combineWords(wordList);
+      const chaosPromise = textParticlesRef.current.chaosParticles();
 
-      const combinedWord = await combineWords(wordList);
+      const combinedWord = await aiPromise;
+      await chaosPromise;
 
-      // Final display
-      setTimeout(() => {
-        setTexts([combinedWord]);
-        setPositions([[0, 0, 0]]);
-        setBackgroundColor(getRandomBackgroundColor());
-        setIsInputVisible(true);
-      }, 6000);
+      // Show final combined word from API
+      setTexts([combinedWord]);
+      setPositions([[0, 0, 0]]);
+      setBackgroundColor(getRandomBackgroundColor());
+      setIsInputVisible(true); // Show input again
     }
   };
 
+  // Call OpenAI API with user input
   const combineWords = async (userWords) => {
     try {
       const response = await fetch('/api/route', {
@@ -115,6 +120,7 @@ const App = () => {
     }
   };
 
+  // Update canvas size on window resize
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -127,7 +133,7 @@ const App = () => {
     <LandingPage onContinue={handleContinue} />
   ) : (
     <>
-      {/* Input or Loading */}
+      {/* Input box or loading message */}
       <div
         style={{
           visibility: 'visible',
@@ -174,11 +180,13 @@ const App = () => {
               }}
               onFocus={(e) => {
                 e.target.style.borderColor = '#4A90E2';
-                e.target.style.boxShadow = '0 4px 8px rgba(74, 144, 226, 0.2)';
+                e.target.style.boxShadow =
+                  '0 4px 8px rgba(74, 144, 226, 0.2)';
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = '#ccc';
-                e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                e.target.style.boxShadow =
+                  '0 2px 4px rgba(0, 0, 0, 0.1)';
               }}
             />
           </>
