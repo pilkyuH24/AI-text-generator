@@ -38,14 +38,14 @@ const TextParticles = forwardRef(({ texts, positions, width, onChaosComplete }, 
       // Create a canvas to render the text as an image
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-      const fontSize = 120; 
-      const maxWidth = width * 0.6; // Maximum width for text wrapping
+      const fontSize = 60; 
+      const maxWidth = width * 0.3; // Maximum width for text wrapping
       canvas.width = 1024;
       canvas.height = 512;
 
       const fontList = [
         { name: 'Sniglet', url: 'url(/../font/Sniglet/Sniglet-Regular.ttf)' },
-        { name: 'Russo One', url: 'url(/../font/Russo_One/RussoOne-Regular.ttf)' },
+        // { name: 'Russo One', url: 'url(/../font/Russo_One/RussoOne-Regular.ttf)' },
         { name: 'Chewy', url: 'url(/../font/Chewy/Chewy-Regular.ttf)' },
       ];
 

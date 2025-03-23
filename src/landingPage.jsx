@@ -16,7 +16,7 @@ const LandingPage = ({ onContinue }) => {
   return (
     <div className="landing-page">
       <canvas ref={canvasRef} />
-      <button id="startButton" onClick={onContinue}>Try the Gen-Z Generator</button>
+      <button id="startButton" onClick={onContinue}>Try the TEXT Generator</button>
     </div>
   );
 };
