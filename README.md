@@ -1,4 +1,4 @@
-# GenZ AI Text Particle Generator
+# AI Text Particle Generator
 
 A **3D text particle playground** built with **React** and **Three.js**, powered by **OpenAI**.  
 Users input a few words, and the app transforms them into animated particle-based text with a surprise AI-generated Gen-Z-inspired suggestion — complete with chaos effects and vivid background transitions.
