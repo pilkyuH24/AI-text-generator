@@ -57,9 +57,11 @@ Users input a few words, and the app transforms them into animated particle-base
 
 ## Screenshots
 ![Landing Page](./landing-page.png)
-
+![Result Page](./result.png)
 
 
 ---
 
 ## Demo
+
+[TEST Here](https://genz-ai-generator.vercel.app/)
